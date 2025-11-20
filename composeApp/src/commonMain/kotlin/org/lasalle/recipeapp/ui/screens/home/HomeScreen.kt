@@ -2,17 +2,7 @@ package org.lasalle.recipeapp.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -23,25 +13,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,11 +29,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lasalle.recipeapp.models.RecipePreview
 import org.lasalle.recipeapp.ui.HomeScreenRoute
 import org.lasalle.recipeapp.ui.LoginScreenRoute
-import org.lasalle.recipeapp.ui.RecipeTheme
 import org.lasalle.recipeapp.ui.screens.home.components.LoadingOverlay
 import org.lasalle.recipeapp.ui.screens.home.components.RecipeCard
 import org.lasalle.recipeapp.ui.screens.home.components.RecipeListItem
@@ -74,6 +47,7 @@ fun HomeScreen(navController: NavController) {
     val focusManager = LocalFocusManager.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     val scope = rememberCoroutineScope()
+
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     LazyColumn(
@@ -98,6 +72,7 @@ fun HomeScreen(navController: NavController) {
                         color = colors.onSurface,
                     )
                 }
+
                 Box(
                     modifier = Modifier
                         .size(35.dp)
@@ -107,14 +82,9 @@ fun HomeScreen(navController: NavController) {
                 ) {
                     Text(text = vm.userName.take(1), color = colors.primary)
                 }
+
                 IconButton(onClick = {
-                    // Cerrar sesión
-                    vm.logout()
-                    navController.navigate(LoginScreenRoute){
-                        popUpTo(HomeScreenRoute) {
-                            inclusive = true
-                        }
-                    }
+                    showLogoutDialog = true
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -143,7 +113,7 @@ fun HomeScreen(navController: NavController) {
                 trailingIcon = {
                     IconButton(onClick = {
                         hideKeyboard(focusManager)
-                        vm.generateRecipe(){
+                        vm.generateRecipe() {
                             scope.launch {
                                 sheetState.partialExpand()
                             }
@@ -258,8 +228,7 @@ fun HomeScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
@@ -278,8 +247,7 @@ fun HomeScreen(navController: NavController) {
                     imageVector = Icons.Default.AutoAwesome,
                     contentDescription = "Generar Receta",
                     tint = colors.primary,
-                    modifier = Modifier
-                        .size(30.dp)
+                    modifier = Modifier.size(30.dp)
                 )
             }
         }
@@ -296,13 +264,12 @@ fun HomeScreen(navController: NavController) {
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                val list = vm.recipes // o vm.Recipes si ese es el nombre real
-                list.forEach { recipe ->
+                vm.recipes.forEach { recipe ->
                     RecipeListItem(
                         recipe = recipe,
                         onClick = {
                             scope.launch {
-                                val recipePreview = RecipePreview(
+                                val preview = RecipePreview(
                                     title = recipe.title,
                                     category = recipe.category,
                                     imageUrl = recipe.imageUrl,
@@ -312,7 +279,7 @@ fun HomeScreen(navController: NavController) {
                                     stars = recipe.stars,
                                     prompt = ""
                                 )
-                                vm.showModalFromList(recipe = recipePreview)
+                                vm.showModalFromList(preview)
                                 sheetState.partialExpand()
                             }
                         }
@@ -326,8 +293,6 @@ fun HomeScreen(navController: NavController) {
     if (vm.isLoading) {
         LoadingOverlay()
     }
-
-
 
     // Modal de receta generada
     if (vm.showSheet) {
@@ -366,7 +331,6 @@ fun HomeScreen(navController: NavController) {
 
                 Spacer(Modifier.height(16.dp))
 
-                // Estrellas
                 Row(
                     modifier = Modifier
                         .clip(CircleShape)
@@ -384,7 +348,7 @@ fun HomeScreen(navController: NavController) {
                         color = colors.onSurface,
                         fontWeight = FontWeight.Bold
                     )
-                    // Tiempo de preparación
+
                     Icon(
                         imageVector = Icons.Default.Schedule,
                         contentDescription = "Time Icon",
@@ -394,12 +358,12 @@ fun HomeScreen(navController: NavController) {
                         text = "${vm.generatedRecipe?.minutes} min",
                         color = colors.onSurface,
                     )
+
                     Text(
                         text = "${vm.generatedRecipe?.category}",
                         color = colors.onSurface,
                         fontWeight = FontWeight.Bold
                     )
-
                 }
 
                 Spacer(Modifier.height(16.dp))
@@ -437,68 +401,82 @@ fun HomeScreen(navController: NavController) {
                     color = colors.onSurface,
                     fontWeight = FontWeight.Bold
                 )
+
+                val instructions = vm.generatedRecipe?.instructions ?: listOf()
+
+                instructions.forEachIndexed { index, instruction ->
+                    Row(
+                        verticalAlignment = Alignment.Top,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "${index + 1}. ",
+                            color = colors.primary,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = instruction,
+                            color = colors.onSurface,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(20.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    val instructions = vm.generatedRecipe?.instructions ?: listOf()
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    Button(
+                        onClick = {
+                            scope.launch {
+                                sheetState.hide()
+                                vm.hidemodal()
+                            }
+
+                            if (!vm.isGenerated) {
+                                vm.saveRecipeInDb()
+                                vm.isGenerated = true
+                            }
+                        },
+                        shape = RoundedCornerShape(12.dp)
                     ) {
-                        // Lista de pasos numerados
-                        instructions.forEachIndexed { index, instruction ->
-                            Row(
-                                verticalAlignment = Alignment.Top,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "${index + 1}. ",
-                                    color = colors.primary,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                    text = instruction,
-                                    color = colors.onSurface,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                        }
-
-                        Spacer(Modifier.height(20.dp))
-
-                        // Botón alineado a la derecha
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Button(
-                                onClick = {
-                                    scope.launch {
-                                        sheetState.hide()
-                                        vm.hidemodal()
-                                    }
-                                    if (!vm.isGenerated) {
-                                        vm.saveRecipeInDb()
-                                        vm.isGenerated = true
-                                    }
-
-                                },
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Text(
-                                    text = if (!vm.isGenerated) "Guardar" else "Cerrar",
-                                    color = colors.onPrimary
-                                )
-                            }
-                        }
+                        Text(
+                            text = if (!vm.isGenerated) "Guardar" else "Cerrar",
+                            color = colors.onPrimary
+                        )
                     }
                 }
             }
         }
     }
+
+    // ALERT DIALOG — confirmación de cierre de sesión
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Confirmar cierre de sesión") },
+            text = { Text("¿Deseas cerrar sesión?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showLogoutDialog = false
+                        vm.logout()
+                        navController.navigate(LoginScreenRoute) {
+                            popUpTo(HomeScreenRoute) { inclusive = true }
+                        }
+                    }
+                ) {
+                    Text("Cerrar sesión")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 }
-
-
