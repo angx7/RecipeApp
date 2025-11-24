@@ -1,6 +1,7 @@
 package org.lasalle.recipeapp.ui.screens.auth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,10 +26,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lasalle.recipeapp.ui.RecipeTheme
 import org.lasalle.recipeapp.ui.viewmodels.AuthViewModel
@@ -37,31 +38,40 @@ import org.lasalle.recipeapp.ui.viewmodels.AuthViewModel
 fun RegisterScreen(navController: NavController) {
     val colors = MaterialTheme.colorScheme
     val authViewModel : AuthViewModel = viewModel()
-    var name by remember{
+    var name by remember {
         mutableStateOf("")
     }
-    var email by remember{
+    var email by remember {
         mutableStateOf("")
     }
-    var password by remember{
+    var password by remember {
         mutableStateOf("")
     }
-    var confirmPassword by remember{
+    var confirmedPassword by remember {
         mutableStateOf("")
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
     ){
+        // Fondo
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
-                .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
+                .clip(
+                    RoundedCornerShape(
+                        bottomStart = 50.dp,
+                        bottomEnd = 50.dp
+                    )
+                )
                 .background(colors.primary)
         )
-        Column (
+
+        // Card
+        Column(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()
@@ -71,58 +81,80 @@ fun RegisterScreen(navController: NavController) {
                 .clip(RoundedCornerShape(40.dp))
                 .background(colors.surface),
             horizontalAlignment = Alignment.CenterHorizontally,
-        ){
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
-                text = "Crear Cuenta",
+                text = "Crear Cuenta"
             )
+
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
                 placeholder = {
-                    Text(text = "Nombre de usuario" )
-                }
+                    Text(
+                        text = "Nombre"
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                )
             )
+
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 placeholder = {
-                    Text(text = "Correo" )
-                }
+                    Text(
+                        text = "Correo Electronico"
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Email
+                )
             )
+
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 placeholder = {
-                    Text(text = "Contraseña" )
+                    Text(
+                        text = "Contraseña"
+                    )
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Next
-                ),
+                )
             )
+
             OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
+                value = confirmedPassword,
+                onValueChange = { confirmedPassword = it },
                 placeholder = {
-                    Text(text = "Confirmar contraseña" )
+                    Text(
+                        text = "Confirma contraseña"
+                    )
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Send
                 ),
-                keyboardActions = KeyboardActions(
+                keyboardActions = KeyboardActions (
                     onSend = {
-                        if (name.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-                            println("Por favor, complete todos los campos.")
+                        if(
+                            name.isBlank() ||
+                            email.isBlank() ||
+                            password.isBlank() ||
+                            confirmedPassword.isBlank()
+                        ){
+                            println("Faltan valores por completar")
                             return@KeyboardActions
                         }
-                        if (password != confirmPassword) {
-                            println("Las contraseñas no coinciden.")
+                        if (password != confirmedPassword){
+                            println("Las contraseñas no son iguales")
                             return@KeyboardActions
                         }
-
-                        // Expresiones regulares para validar el formato del correo y la fortaleza de la contraseña
-
 
                         authViewModel.register(
                             name = name,
@@ -132,26 +164,29 @@ fun RegisterScreen(navController: NavController) {
                     }
                 )
             )
+
             Button(
                 onClick = {
-                    if (name.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-                        println("Por favor, complete todos los campos.")
+                    if(
+                        name.isBlank() ||
+                        email.isBlank() ||
+                        password.isBlank() ||
+                        confirmedPassword.isBlank()
+                    ){
+                        println("Faltan valores por completar")
                         return@Button
                     }
-                    if (password != confirmPassword) {
-                        println("Las contraseñas no coinciden.")
+                    if (password != confirmedPassword){
+                        println("Las contraseñas no son iguales")
                         return@Button
                     }
-
-                    // Expresiones regulares para validar el formato del correo y la fortaleza de la contraseña
-
 
                     authViewModel.register(
                         name = name,
                         email = email,
                         password = password
                     )
-                }
+                },
             ){
                 Text(
                     text = "Registrarse"
@@ -160,4 +195,3 @@ fun RegisterScreen(navController: NavController) {
         }
     }
 }
-

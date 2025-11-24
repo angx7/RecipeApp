@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import org.lasalle.recipeapp.models.Recipe
@@ -65,20 +66,20 @@ fun RecipeCard(recipe: Recipe, onClick:() -> Unit) {
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Star Icon",
-                    tint = colors.onSurface
+                    tint = colors.surface
                 )
                 Text(
                     text = "${recipe.stars}",
-                    color = colors.onSurface
+                    color = colors.surface
                 )
                 Icon(
                     imageVector = Icons.Default.Schedule,
                     contentDescription = "Schedule Icon",
-                    tint = colors.onSurface
+                    tint = colors.surface
                 )
                 Text(
                     text = "${recipe.minutes} min",
-                    color = colors.onSurface
+                    color = colors.surface
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -87,11 +88,13 @@ fun RecipeCard(recipe: Recipe, onClick:() -> Unit) {
             ) {
                 Text(
                     text = recipe.title,
-                    color = Color.White
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = recipe.category,
-                    color = Color.White
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }

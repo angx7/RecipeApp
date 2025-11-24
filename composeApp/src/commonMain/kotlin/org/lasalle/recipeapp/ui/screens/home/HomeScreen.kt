@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
@@ -100,6 +101,8 @@ fun HomeScreen(navController: NavController) {
             Spacer(Modifier.height(15.dp))
             Text(
                 text = "Crea, cocina, comparte y disfruta",
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                fontSize = 25.sp,
                 color = colors.onSurface
             )
 

@@ -42,7 +42,7 @@ fun RecipeListItem(
             .height(80.dp)
             .shadow(1.dp, RoundedCornerShape(25.dp))
             .clip(RoundedCornerShape(25.dp))
-            .background(Color.White)
+            .background(colors.surface)
             .clickable() { onClick() }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -63,7 +63,7 @@ fun RecipeListItem(
         ) {
             Text(
                 text = recipe.title,
-                color = Color.Black,
+                color = colors.onSurface,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -28,8 +27,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lasalle.recipeapp.ui.HomeScreenRoute
 import org.lasalle.recipeapp.ui.LoginScreenRoute
+import org.lasalle.recipeapp.ui.RecipeTheme
 import org.lasalle.recipeapp.ui.viewmodels.AuthViewModel
 
 @Composable
@@ -42,24 +44,26 @@ fun LoginScreen(navController: NavController){
     var password by remember {
         mutableStateOf("")
     }
+
     LaunchedEffect(authViewModel.isLogged){
         if (authViewModel.isLogged){
-            navController.navigate(HomeScreenRoute) {
-                popUpTo(LoginScreenRoute) { inclusive = true }
+            navController.navigate(HomeScreenRoute){
+                popUpTo(LoginScreenRoute){
+                    inclusive = true
+                }
             }
         }
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
-
     ){
         // Fondo
         Column(
             modifier = Modifier.fillMaxSize()
-        )
-        {
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -74,51 +78,52 @@ fun LoginScreen(navController: NavController){
                 modifier = Modifier
                     .fillMaxWidth()
             )
-
         }
 
-        // Card
+        //Card
         Column(
             modifier = Modifier
-                .align(Alignment.Center)
                 .padding(horizontal = 20.dp)
+                .align(Alignment.Center)
                 .height(350.dp)
                 .clip(RoundedCornerShape(24.dp))
                 .background(colors.surface),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        )
-        {
+        ) {
             Text(
                 text = "Bienvenido"
             )
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                placeholder = { Text("Correo Electrónico") },
+                placeholder = { Text("Correo Electronico") },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(50.dp)
             )
+
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                placeholder = { Text("Contraseña") },
+                placeholder = { Text("Contraseña", color = colors.surfaceVariant) },
                 modifier = Modifier
                     .fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    cursorColor = colors.primary
+                    cursorColor = colors.primary,
                 )
             )
-            Button(
-                onClick = {
-                    if (email.isBlank() || password.isBlank()){
-                        return@Button
-                    }
-                    authViewModel.login(email, password)
-                },
-                colors = ButtonDefaults.buttonColors()
-            ){
-                Text("Iniciar Sesión")
+
+            Button(onClick = {
+                if ( email.isBlank() || password.isBlank()) return@Button
+
+                authViewModel.login(
+                    email = email,
+                    password = password
+                )
+            }
+            ) {
+                Text("Iniciar Sesion")
             }
         }
     }
