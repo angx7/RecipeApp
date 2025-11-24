@@ -1,35 +1,90 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# RecipeApp – Kotlin Multiplatform
+Aplicación móvil desarrollada con **Kotlin Multiplatform (KMP)** y **Compose Multiplatform**, diseñada para generar recetas personalizadas basadas en los ingredientes que proporcione el usuario. Funciona tanto en **Android** como en **iOS** con una sola base de código.
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+## Descripción
+RecipeApp permite a los usuarios ingresar uno o varios ingredientes y obtener recetas sugeridas que pueden prepararse con esos insumos. La app se conecta a una API que procesa los ingredientes y devuelve una lista de recetas con nombre, pasos e información relevante.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## Tecnologías utilizadas
+### Multiplataforma
+- Kotlin Multiplatform (KMP)
+- Compose Multiplatform
+- Ktorfit (cliente API)
+- Kotlin Serialization
+- ViewModel + StateFlow (Multiplataforma)
 
-### Build and Run Android Application
+### Android
+- Compose UI
+- Activity Compose
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+### iOS
+- Compose Multiplatform para iOS (UIKit embedding)
 
-### Build and Run iOS Application
+## Arquitectura
+- Data Layer (Ktorfit, modelos)
+- Domain Layer (casos de uso)
+- UI Layer (Compose, StateFlow)
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+## Funcionalidades principales
+- Ingreso de ingredientes
+- Obtención de recetas desde la API
+- Pantalla de resultados
+- Modo claro/oscuro
+- Tema unificado
 
----
+## Estructura del proyecto
+```
+composeApp/
+ ├── commonMain/
+ │    ├── data/
+ │    ├── domain/
+ │    ├── ui/
+ ├── androidMain/
+ └── iosMain/
+```
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## API
+```
+POST /api/recipes
+{
+  "ingredients": ["tomate", "pan", "queso"]
+}
+```
+
+Respuesta:
+```json
+{
+  "recipes": [
+    {
+      "title": "Sandwich de queso y tomate",
+      "ingredients": ["pan", "tomate", "queso"],
+      "steps": ["Corta...", "Mezcla...", "Sirve..."]
+    }
+  ]
+}
+```
+
+## Ejecución
+### Android
+```
+Run → Android App
+```
+
+### iOS
+```
+./gradlew iosApp:podInstall
+Open iosApp.xcworkspace
+```
+
+## Próximas mejoras
+- Búsqueda por nombre
+- Favoritos
+- Filtros por categoría
+- Integración con cámara
+
+## Contribuir
+1. Fork
+2. Rama nueva
+3. Pull Request
+
+## Autor
+GitHub: https://github.com/angx7
